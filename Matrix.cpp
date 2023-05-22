@@ -228,6 +228,29 @@ bool Matrix::avoid(const Matrix &b) const
 }
 
 /**
+ * Function for shifting (subtract 1 from given row for each column unless it makes a copy)
+ * 0 is preserved as 0
+ * REQUIRES: matrix is simple, row < this->rows
+ */
+void Matrix::shift(unsigned int row)
+{
+  if (row >= rows || !this->isSimple()) {
+    std::cout << "Shifting undefined for this case" << std::endl;
+  }
+  vector<vector<int>> toShift = getCols();
+  for (unsigned int i = 0; i < toShift.size(); i++) {
+    vector<int> temp = toShift[i];
+    int entry = temp[row];
+    temp[row] = entry == 0 ? 0 : entry - 1;
+    if (!list_contains(temp, toShift)) {
+      toShift[i] = temp;
+    }
+  }
+  Matrix other(1, toShift);
+  elems = other.elems;
+}
+
+/**
  * Private helper function for avoid, checking for different columns first
  */
 bool Matrix::avoid(const Node& col_node, const Matrix &b) const
@@ -261,7 +284,6 @@ bool Matrix::avoid(const vector<int> &pot_cols, const Node &row_node, const Matr
     for (unsigned int j = 0; j < row_node.sel.size(); j++) {
       mat.push_back(temp[row_node.sel[j]]);
     }
-    std::cout << Matrix(0, mat) << std::endl;
     return !contains(Matrix(0, mat));
   }
   for (unsigned int i = 0; i < row_node.rem.size(); i++) {
@@ -430,3 +452,10 @@ int dot(vector<int>& a, vector<int>& b) {
   return ret;
 }
 
+template<class E>
+bool list_contains(E &elem, vector<E> &list) {
+  for (E e : list) {
+    if (e == elem) return true;
+  }
+  return false;
+}

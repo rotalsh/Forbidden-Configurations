@@ -37,9 +37,11 @@ class Matrix
     bool containedIn(const Matrix& b) const;
     // no repeated columns
     bool isSimple();
+    // part 4
     // return true if no configuration of b is in this
     bool avoid(const Matrix& b) const;
-    
+    // part 5
+    void shift(unsigned int row);
 
   public:
     struct Node {
@@ -63,5 +65,7 @@ std::ostream& operator<<(std::ostream& output, const vector<vector<int>>& a);
 std::ostream& operator<<(std::ostream& output, const Matrix& a);
 vector<int> makeVec(unsigned int i);
 vector<vector<int>> rowColSwap(vector<vector<int>>& a);
+template<class E>
+bool list_contains(E &elem, vector<E> &list);
 
 #endif
