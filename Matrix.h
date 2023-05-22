@@ -43,7 +43,7 @@ class Matrix
     // part 5
     void shift(unsigned int row);
 
-  public:
+  private:
     struct Node {
       Node(vector<int> r, vector<int> s) 
         : rem(r), sel(s) {}
@@ -67,5 +67,8 @@ vector<int> makeVec(unsigned int i);
 vector<vector<int>> rowColSwap(vector<vector<int>>& a);
 template<class E>
 bool list_contains(E &elem, vector<E> &list);
+
+vector<vector<int>> columns_of_colsum(int height, int sum);
+Matrix generate_K(int height);
 
 #endif
