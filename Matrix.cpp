@@ -220,19 +220,19 @@ bool Matrix::rowsContain(const Matrix &a, const Matrix &b) const {
 /**
  * @todo don't forget to do this lul
  */
-bool Matrix::avoid(const Matrix &b) const
+bool Matrix::avoids(const Matrix &b) const
 {
   if (rows < b.rows || cols < b.cols) return true;
   if (*this == b) return false;
-  return avoid(Node(makeVec(b.cols), vector<int>()), b);
+  return avoids(Node(makeVec(b.cols), vector<int>()), b);
 }
 
 /**
- * Function for shifting (subtract 1 from given row for each column unless it makes a copy)
+ * Function for shifting down (subtract 1 from given row for each column unless it makes a copy)
  * 0 is preserved as 0
  * REQUIRES: matrix is simple, row < this->rows
  */
-void Matrix::shift(unsigned int row)
+void Matrix::shiftDown(unsigned int row)
 {
   if (row >= rows || !this->isSimple()) {
     std::cout << "Shifting undefined for this case" << std::endl;
@@ -241,7 +241,30 @@ void Matrix::shift(unsigned int row)
   for (unsigned int i = 0; i < toShift.size(); i++) {
     vector<int> temp = toShift[i];
     int entry = temp[row];
-    temp[row] = entry == 0 ? 0 : entry - 1;
+    temp[row] = 0;
+    if (!list_contains(temp, toShift)) {
+      toShift[i] = temp;
+    }
+  }
+  Matrix other(1, toShift);
+  elems = other.elems;
+}
+
+/**
+ * Function for shifting up (add 1 from given row for each column unless it makes a copy)
+ * 1 is preserved as 1
+ * REQUIRES: matrix is simple, row < this->rows
+ */
+void Matrix::shiftUp(unsigned int row)
+{
+  if (row >= rows || !this->isSimple()) {
+    std::cout << "Shifting undefined for this case" << std::endl;
+  }
+  vector<vector<int>> toShift = getCols();
+  for (unsigned int i = 0; i < toShift.size(); i++) {
+    vector<int> temp = toShift[i];
+    int entry = temp[row];
+    temp[row] = 1;
     if (!list_contains(temp, toShift)) {
       toShift[i] = temp;
     }
@@ -253,17 +276,17 @@ void Matrix::shift(unsigned int row)
 /**
  * Private helper function for avoid, checking for different columns first
  */
-bool Matrix::avoid(const Node& col_node, const Matrix &b) const
+bool Matrix::avoids(const Node& col_node, const Matrix &b) const
 {
   if (col_node.rem.empty()) {
-    return avoid(col_node.sel, Node(makeVec(b.rows), vector<int>()), b);
+    return avoids(col_node.sel, Node(makeVec(b.rows), vector<int>()), b);
   }
   for (unsigned int i = 0; i < col_node.rem.size(); i++) {
     vector<int> curr_sel = col_node.sel;
     vector<int> curr_rem = col_node.rem;
     curr_sel.push_back(curr_rem[i]);
     curr_rem.erase(curr_rem.begin() + i);    
-    bool attempt = avoid(Node(curr_rem, curr_sel), b);
+    bool attempt = avoids(Node(curr_rem, curr_sel), b);
     if (!attempt) return false;
   }
   return true;
@@ -272,7 +295,7 @@ bool Matrix::avoid(const Node& col_node, const Matrix &b) const
 /**
  * Private helper function for avoid, given a fixed column check different rows
  */
-bool Matrix::avoid(const vector<int> &pot_cols, const Node &row_node, const Matrix &b) const
+bool Matrix::avoids(const vector<int> &pot_cols, const Node &row_node, const Matrix &b) const
 {
   if (row_node.rem.empty()) {
     vector<vector<int>> temp;
@@ -291,7 +314,7 @@ bool Matrix::avoid(const vector<int> &pot_cols, const Node &row_node, const Matr
     vector<int> curr_rem = row_node.rem;
     curr_sel.push_back(curr_rem[i]);
     curr_rem.erase(curr_rem.begin() + i);    
-    bool attempt = avoid(pot_cols, Node(curr_rem, curr_sel), b);
+    bool attempt = avoids(pot_cols, Node(curr_rem, curr_sel), b);
     if (!attempt) return false;
   }
   return true;
@@ -435,6 +458,31 @@ vector<vector<int>> rowColSwap(vector<vector<int>> &a)
     ret.push_back(vec);
   }
   return ret;
+}
+
+/**
+ * @todo finish this function
+ */
+vector<vector<int>> columns_of_col_sum(int height, int sum)
+{
+  vector<vector<int>> ret;
+  if (sum == 0) {
+    vector<int> zeros;
+    for (int i = 0; i < height; i++) {
+      zeros.push_back(0);
+    }
+    ret.push_back(zeros);
+    return ret;
+  }
+  return vector<vector<int>>();
+}
+
+/**
+ * @todo finish this function
+ */
+Matrix generate_K(int height)
+{
+  return Matrix(1, 1, {1});
 }
 
 /**

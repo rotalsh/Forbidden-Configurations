@@ -39,9 +39,10 @@ class Matrix
     bool isSimple();
     // part 4
     // return true if no configuration of b is in this
-    bool avoid(const Matrix& b) const;
+    bool avoids(const Matrix& b) const;
     // part 5
-    void shift(unsigned int row);
+    void shiftUp(unsigned int row);
+    void shiftDown(unsigned int row);
 
   private:
     struct Node {
@@ -53,8 +54,8 @@ class Matrix
     vector<int> elems;
     vector<vector<int>> potentialCols(int row, int k, int pos, const Matrix& b) const;
     bool rowsContain(const Matrix& a, const Matrix& b) const;
-    bool avoid(const Node& col_node, const Matrix& b) const;
-    bool avoid(const vector<int> &pot_cols, const Node& row_node, const Matrix& b) const;
+    bool avoids(const Node& col_node, const Matrix& b) const;
+    bool avoids(const vector<int> &pot_cols, const Node& row_node, const Matrix& b) const;
 };
 
 Matrix dot(Matrix a, Matrix b);
@@ -68,7 +69,7 @@ vector<vector<int>> rowColSwap(vector<vector<int>>& a);
 template<class E>
 bool list_contains(E &elem, vector<E> &list);
 
-vector<vector<int>> columns_of_colsum(int height, int sum);
+vector<vector<int>> columns_of_col_sum(int height, int sum);
 Matrix generate_K(int height);
 
 #endif
