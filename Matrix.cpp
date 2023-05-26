@@ -505,17 +505,21 @@ vector<vector<int>> columns_of_col_sum(unsigned int height, unsigned int sum)
   return add_ones;
 }
 
-/**
- * Make K_height - a height x 2^height matrix of all possible columns of size height
- */
-Matrix generate_K(unsigned int height)
+vector<vector<int>> columns_of_K(unsigned int height)
 {
   vector<vector<int>> all_columns;
   for (unsigned int i = 0; i <= height; i++) {
     vector<vector<int>> sum_columns = columns_of_col_sum(height, i);
     all_columns.insert(all_columns.end(), sum_columns.begin(), sum_columns.end());
   }
-  return Matrix(1, all_columns);
+  return all_columns;
+}
+/**
+ * Make K_height - a height x 2^height matrix of all possible columns of size height
+ */
+Matrix generate_K(unsigned int height)
+{
+  return Matrix(1, columns_of_K(height));
 }
 
 /**
@@ -574,4 +578,15 @@ Matrix matrixCross(const Matrix& a, const Matrix& b) {
     }
   }
   return Matrix(1, combined);
+}
+
+/**
+ * Given two matrices make a new matrix whose columns are the columns of a followed by the columns of b
+ * REQUIRED: a and b have the same number of rows
+ */
+Matrix matrixCombine(const Matrix& a, const Matrix& b) {
+  vector<vector<int>> a_cols = a.getCols();
+  vector<vector<int>> b_cols = b.getCols();
+  a_cols.insert(a_cols.end(), b_cols.begin(), b_cols.end());
+  return Matrix(1, a_cols);
 }

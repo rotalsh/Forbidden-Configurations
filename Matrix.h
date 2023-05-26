@@ -73,11 +73,13 @@ bool list_contains(E &elem, vector<E> &list);
 
 // part 6
 vector<vector<int>> columns_of_col_sum(unsigned int height, unsigned int sum);
+vector<vector<int>> columns_of_K(unsigned int height);
 Matrix generate_K(unsigned int height);
 Matrix generate_T(unsigned int height);
 
 // part 7
 Matrix matrixCross(const Matrix& a, const Matrix& b);
+Matrix matrixCombine(const Matrix& a, const Matrix& b);
 
 
 #endif
