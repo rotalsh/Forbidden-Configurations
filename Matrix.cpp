@@ -562,5 +562,16 @@ bool list_contains(E &elem, vector<E> &list) {
 }
 
 Matrix matrixCross(const Matrix& a, const Matrix& b) {
-  
+  vector<vector<int>> a_cols = a.getCols();
+  vector<vector<int>> b_cols = b.getCols();
+  vector<vector<int>> combined;
+  for (unsigned int i = 0; i < a_cols.size(); i++) {
+    vector<int> curr_col = a_cols[i];
+    for (unsigned int j = 0; j < b_cols.size(); j++) {
+      vector<int> col = curr_col;
+      col.insert(col.end(), b_cols[j].begin(), b_cols[j].end());
+      combined.push_back(col);
+    }
+  }
+  return Matrix(1, combined);
 }
