@@ -560,3 +560,7 @@ bool list_contains(E &elem, vector<E> &list) {
   }
   return false;
 }
+
+Matrix matrixCross(const Matrix& a, const Matrix& b) {
+  
+}
