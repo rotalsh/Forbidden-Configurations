@@ -240,7 +240,6 @@ void Matrix::shiftDown(unsigned int row)
   vector<vector<int>> toShift = getCols();
   for (unsigned int i = 0; i < toShift.size(); i++) {
     vector<int> temp = toShift[i];
-    int entry = temp[row];
     temp[row] = 0;
     if (!list_contains(temp, toShift)) {
       toShift[i] = temp;
@@ -263,7 +262,6 @@ void Matrix::shiftUp(unsigned int row)
   vector<vector<int>> toShift = getCols();
   for (unsigned int i = 0; i < toShift.size(); i++) {
     vector<int> temp = toShift[i];
-    int entry = temp[row];
     temp[row] = 1;
     if (!list_contains(temp, toShift)) {
       toShift[i] = temp;
@@ -461,28 +459,50 @@ vector<vector<int>> rowColSwap(vector<vector<int>> &a)
 }
 
 /**
- * @todo finish this function
+ * REQUIRES: sum <= height
  */
-vector<vector<int>> columns_of_col_sum(int height, int sum)
+vector<vector<int>> columns_of_col_sum(unsigned int height, unsigned int sum)
 {
   vector<vector<int>> ret;
   if (sum == 0) {
     vector<int> zeros;
-    for (int i = 0; i < height; i++) {
+    for (unsigned int i = 0; i < height; i++) {
       zeros.push_back(0);
     }
     ret.push_back(zeros);
     return ret;
   }
-  return vector<vector<int>>();
+  if (height == sum) {
+    vector<int> ones;
+    for (unsigned int i = 0; i < height; i++) {
+      ones.push_back(1);
+    }
+    ret.push_back(ones);
+    return ret;
+  }
+  ret = columns_of_col_sum(height - 1, sum);
+  for (unsigned int i = 0; i < ret.size(); i++) {
+    ret[i].emplace(ret[i].begin(), 0);
+  }
+  vector<vector<int>> add_ones = columns_of_col_sum(height - 1, sum - 1);
+  for (unsigned int j = 0; j < add_ones.size(); j++) {
+    add_ones[j].emplace(add_ones[j].begin(), 1);
+  }
+  add_ones.insert(add_ones.end(), ret.begin(), ret.end());
+  return add_ones;
 }
 
 /**
- * @todo finish this function
+ * Make K_height - a height x 2^height matrix of all possible columns of size height
  */
-Matrix generate_K(int height)
+Matrix generate_K(unsigned int height)
 {
-  return Matrix(1, 1, {1});
+  vector<vector<int>> all_columns;
+  for (unsigned int i = 0; i <= height; i++) {
+    vector<vector<int>> sum_columns = columns_of_col_sum(height, i);
+    all_columns.insert(all_columns.end(), sum_columns.begin(), sum_columns.end());
+  }
+  return Matrix(1, all_columns);
 }
 
 /**

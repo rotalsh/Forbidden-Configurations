@@ -69,7 +69,8 @@ vector<vector<int>> rowColSwap(vector<vector<int>>& a);
 template<class E>
 bool list_contains(E &elem, vector<E> &list);
 
-vector<vector<int>> columns_of_col_sum(int height, int sum);
-Matrix generate_K(int height);
+// part 6
+vector<vector<int>> columns_of_col_sum(unsigned int height, unsigned int sum);
+Matrix generate_K(unsigned int height);
 
 #endif
