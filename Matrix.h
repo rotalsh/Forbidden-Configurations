@@ -21,6 +21,8 @@ class Matrix
     Matrix dotWith(Matrix b);
     Matrix transposeOf();
     void transpose();
+    Matrix complementOf();
+    void complement();
     // part 2
     void multiply(int b);
     void multiply(const Matrix& b);
@@ -72,5 +74,7 @@ bool list_contains(E &elem, vector<E> &list);
 // part 6
 vector<vector<int>> columns_of_col_sum(unsigned int height, unsigned int sum);
 Matrix generate_K(unsigned int height);
+Matrix generate_T(unsigned int height);
+
 
 #endif

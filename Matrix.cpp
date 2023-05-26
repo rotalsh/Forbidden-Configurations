@@ -104,6 +104,19 @@ void Matrix::transpose() {
   elems = A.elems;
 }
 
+Matrix Matrix::complementOf() {
+  vector<int> comp;
+  for (unsigned int i = 0; i < elems.size(); i++) {
+    comp.push_back(elems[i] ? 0 : 1);
+  }
+  return Matrix(rows, cols, comp);
+}
+
+void Matrix::complement() {
+  Matrix other = complementOf();
+  elems = other.elems;
+}
+
 void Matrix::multiply(int a) {
   for (unsigned int i = 0; i < elems.size(); i++) {
     elems[i] *= a;
@@ -501,6 +514,26 @@ Matrix generate_K(unsigned int height)
   for (unsigned int i = 0; i <= height; i++) {
     vector<vector<int>> sum_columns = columns_of_col_sum(height, i);
     all_columns.insert(all_columns.end(), sum_columns.begin(), sum_columns.end());
+  }
+  return Matrix(1, all_columns);
+}
+
+/**
+ * Make T_height - an upper triangular matrix of size height
+ * REQUIRES: height > 0
+ */
+Matrix generate_T(unsigned int height)
+{
+  vector<vector<int>> all_columns;
+  for (unsigned int i = 1; i <= height; i++) {
+    vector<int> one_col;
+    for (unsigned int j = 0; j < i; j++) {
+      one_col.push_back(1);
+    }
+    for (unsigned int k = 0; k < height - 1; k++) {
+      one_col.push_back(0);
+    }
+    all_columns.push_back(one_col);
   }
   return Matrix(1, all_columns);
 }
