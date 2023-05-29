@@ -599,15 +599,15 @@ vector<Matrix> Avoid(unsigned int m, const Matrix &F)
   return vector<Matrix>();
 }
 
-/**
- * @todo this function
- */
-int max_col_count(vector<Matrix> &list)
+unsigned int max_col_count(vector<Matrix> &list)
 {
-  return 0;
+  unsigned int max = 0;
+  for (unsigned int i = 0; i < list.size(); i++) {
+    max = std::max(max, list[i].numCols());
+  }
 }
 
-int forb(unsigned int m, const Matrix &F)
+unsigned int forb(unsigned int m, const Matrix &F)
 {
   vector<Matrix> list = Avoid(m, F);
   return max_col_count(list);
@@ -627,9 +627,15 @@ vector<Matrix> match(unsigned int m, const Matrix &F, unsigned int bound)
 }
 
 /**
- * @todo this function
+ * Return a subset of the list of matrices that have the same number of columns as given bound
  */
 vector<Matrix> ext_match_helper(unsigned int bound, vector<Matrix> &list)
 {
-  return vector<Matrix>();
+  vector<Matrix> ret;
+  for (unsigned int i = 0; i < list.size(); i++) {
+    Matrix curr = list[i];
+    if (curr.numCols() == bound) 
+      ret.push_back(curr);
+  }
+  return ret;
 }

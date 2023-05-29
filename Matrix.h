@@ -83,8 +83,8 @@ Matrix matrixCombine(const Matrix& a, const Matrix& b);
 
 // part 8
 vector<Matrix> Avoid(unsigned int m, const Matrix& F);
-int max_col_count(vector<Matrix>& list);
-int forb(unsigned int m, const Matrix& F);
+unsigned int max_col_count(vector<Matrix>& list);
+unsigned int forb(unsigned int m, const Matrix& F);
 vector<Matrix> ext(unsigned int m, const Matrix& F);
 vector<Matrix> match(unsigned int m, const Matrix& F, unsigned int bound);
 vector<Matrix> ext_match_helper(unsigned int bound, vector<Matrix>& list);
