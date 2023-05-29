@@ -1,5 +1,6 @@
 #include "Matrix.h"
 #include <iostream>
+#include <algorithm>
 #include <ostream>
 #include <vector>
 
@@ -230,14 +231,43 @@ bool Matrix::rowsContain(const Matrix &a, const Matrix &b) const {
   return false;
 }
 
-/**
- * @todo don't forget to do this lul
- */
 bool Matrix::avoids(const Matrix &b) const
 {
   if (rows < b.rows || cols < b.cols) return true;
   if (*this == b) return false;
   return avoids(Node(makeVec(b.cols), vector<int>()), b);
+}
+
+/**
+ * @todo don't forget to do this
+ * REQUIRES: b has the same number of columns as this
+ */
+bool Matrix::row_permutation_of(const Matrix &b) const
+{
+  return row_permutation_of(Node(makeVec(b.rows), vector<int>()), b);
+}
+
+/**
+ * Private helper function for row_permutation_of
+ */
+bool Matrix::row_permutation_of(const Node& row_node, const Matrix &b) const {
+  if (row_node.rem.empty()) {
+    vector<vector<int>> mat; 
+    vector<vector<int>> temp = b.getRows();
+    for (unsigned int j = 0; j < row_node.sel.size(); j++) {
+      mat.push_back(temp[row_node.sel[j]]);
+    }
+    return *this == (Matrix(0, mat));
+  }
+  for (unsigned int i = 0; i < row_node.rem.size(); i++) {
+    vector<int> curr_sel = row_node.sel;
+    vector<int> curr_rem = row_node.rem;
+    curr_sel.push_back(curr_rem[i]);
+    curr_rem.erase(curr_rem.begin() + i);    
+    bool attempt = row_permutation_of(Node(curr_rem, curr_sel), b);
+    if (attempt) return true;
+  }
+  return false;
 }
 
 /**
@@ -446,6 +476,13 @@ std::ostream &operator<<(std::ostream &output, const Matrix &a)
   return output;
 }
 
+std::ostream& operator<<(std::ostream& output, const vector<Matrix>& a) {
+  for (unsigned int i = 0; i < a.size(); i++) {
+    output << a[i] << (i == a.size()-1 ? "" : "\n");
+  }
+  return output;
+}
+
 vector<int> makeVec(unsigned int i)
 {
   vector<int> ret;
@@ -592,11 +629,33 @@ Matrix matrixCombine(const Matrix& a, const Matrix& b) {
 }
 
 /**
+ * Private helper for Avoid - generative recursion
+ */
+vector<Matrix> Avoid(vector<vector<int>> rem, vector<vector<int>> sel, const Matrix &F) {
+  if (rem.empty()) 
+    return vector<Matrix>();
+  vector<vector<int>> skip = sel;
+  sel.push_back(rem.back());
+  rem.pop_back();
+  Matrix test(1, sel);
+  vector<Matrix> ret;
+  if (test.avoids(F)) {
+    ret = Avoid(rem, sel, F);
+    ret.push_back(test);
+  }
+  vector<Matrix> other = Avoid(rem, skip, F);
+  ret.insert(ret.end(), other.begin(), other.end());
+  return ret;
+}
+
+/**
  * @todo this function
  */
 vector<Matrix> Avoid(unsigned int m, const Matrix &F)
 {
-  return vector<Matrix>();
+  vector<vector<int>> cols = columns_of_K(m);
+  std::reverse(cols.begin(), cols.end());
+  return Avoid(cols, vector<vector<int>>(), F);
 }
 
 unsigned int max_col_count(vector<Matrix> &list)
@@ -605,6 +664,7 @@ unsigned int max_col_count(vector<Matrix> &list)
   for (unsigned int i = 0; i < list.size(); i++) {
     max = std::max(max, list[i].numCols());
   }
+  return max;
 }
 
 unsigned int forb(unsigned int m, const Matrix &F)
@@ -636,6 +696,24 @@ vector<Matrix> ext_match_helper(unsigned int bound, vector<Matrix> &list)
     Matrix curr = list[i];
     if (curr.numCols() == bound) 
       ret.push_back(curr);
+  }
+  return ret;
+}
+
+vector<Matrix> remove_row_perms(vector<Matrix> &list)
+{
+  vector<Matrix> ret;
+  for (unsigned int i = 0; i < list.size(); i++) {
+    Matrix curr = list[i];
+    int outer = 0;
+    for (unsigned int j = 0; j < ret.size(); j++) {
+      if (curr.row_permutation_of(ret[j])) {
+        outer = 1;
+        break;
+      }
+    }
+    if (outer) continue;
+    ret.push_back(curr);
   }
   return ret;
 }

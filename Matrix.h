@@ -42,6 +42,8 @@ class Matrix
     // part 4
     // return true if no configuration of b is in this
     bool avoids(const Matrix& b) const;
+    // return true if b is a row permuation of this
+    bool row_permutation_of(const Matrix& b) const;
     // part 5
     void shiftUp(unsigned int row);
     void shiftDown(unsigned int row);
@@ -58,6 +60,7 @@ class Matrix
     bool rowsContain(const Matrix& a, const Matrix& b) const;
     bool avoids(const Node& col_node, const Matrix& b) const;
     bool avoids(const vector<int> &pot_cols, const Node& row_node, const Matrix& b) const;
+    bool row_permutation_of(const Node& row_node, const Matrix &b) const;
 };
 
 Matrix dot(Matrix a, Matrix b);
@@ -66,6 +69,7 @@ Matrix operator*(int a, const Matrix& b);
 std::ostream& operator<<(std::ostream& output, const vector<int>& a);
 std::ostream& operator<<(std::ostream& output, const vector<vector<int>>& a);
 std::ostream& operator<<(std::ostream& output, const Matrix& a);
+std::ostream& operator<<(std::ostream& output, const vector<Matrix>& a);
 vector<int> makeVec(unsigned int i);
 vector<vector<int>> rowColSwap(vector<vector<int>>& a);
 template<class E>
@@ -88,5 +92,6 @@ unsigned int forb(unsigned int m, const Matrix& F);
 vector<Matrix> ext(unsigned int m, const Matrix& F);
 vector<Matrix> match(unsigned int m, const Matrix& F, unsigned int bound);
 vector<Matrix> ext_match_helper(unsigned int bound, vector<Matrix>& list);
+vector<Matrix> remove_row_perms(vector<Matrix>& list);
 
 #endif
