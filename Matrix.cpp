@@ -590,3 +590,18 @@ Matrix matrixCombine(const Matrix& a, const Matrix& b) {
   a_cols.insert(a_cols.end(), b_cols.begin(), b_cols.end());
   return Matrix(1, a_cols);
 }
+
+vector<Matrix> Avoid(unsigned int m, const Matrix &F)
+{
+  return vector<Matrix>();
+}
+
+int max_col_count(vector<Matrix> &list)
+{
+  return 0;
+}
+
+int forb(unsigned int m, const Matrix &F)
+{
+  return 0;
+}
