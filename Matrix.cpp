@@ -613,14 +613,6 @@ int forb(unsigned int m, const Matrix &F)
   return max_col_count(list);
 }
 
-/**
- * @todo this function
- */
-vector<Matrix> ext_match_helper(unsigned int bound, vector<Matrix> &list)
-{
-  return vector<Matrix>();
-}
-
 vector<Matrix> ext(unsigned int m, const Matrix &F)
 {
   vector<Matrix> list = Avoid(m, F);
@@ -632,4 +624,12 @@ vector<Matrix> match(unsigned int m, const Matrix &F, unsigned int bound)
 {
   vector<Matrix> list = Avoid(m, F);
   return ext_match_helper(bound, list);
+}
+
+/**
+ * @todo this function
+ */
+vector<Matrix> ext_match_helper(unsigned int bound, vector<Matrix> &list)
+{
+  return vector<Matrix>();
 }
