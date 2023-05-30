@@ -93,5 +93,8 @@ vector<Matrix> ext(unsigned int m, const Matrix& F);
 vector<Matrix> match(unsigned int m, const Matrix& F, unsigned int bound);
 vector<Matrix> ext_match_helper(unsigned int bound, vector<Matrix>& list);
 vector<Matrix> remove_row_perms(vector<Matrix>& list);
+// part 9
+void what_is_missing(unsigned int k, Matrix &A);
+void remove_duplicates(vector<vector<int>> &columns);
 
 #endif

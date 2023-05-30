@@ -466,6 +466,9 @@ std::ostream &operator<<(std::ostream &output, const Matrix &a)
   output << "_" << std::endl;
   unsigned int rows = a.numRows(), cols = a.numCols();
   vector<int> elems = a.getElems();
+  if (elems.empty()) {
+    return output;
+  }
   for (unsigned int i = 0; i < rows; i++) {
     output << "| ";
     for (unsigned int j = 0; j < cols; j++) {
@@ -716,4 +719,53 @@ vector<Matrix> remove_row_perms(vector<Matrix> &list)
     ret.push_back(curr);
   }
   return ret;
+}
+
+/**
+ * On the combinations of k rows, tells you what's missing
+ * REQUIRES: k <= A.numRows()
+ */
+void what_is_missing(unsigned int k, Matrix &A)
+{
+  int m = A.numRows();
+  vector<vector<int>> k_tuples = columns_of_col_sum(m, k);
+  for (vector<int> k_tuple : k_tuples) {
+    vector<int> rows;
+    for (unsigned int i = 0; i < k_tuple.size(); i++) {
+      if (k_tuple[i]) 
+        rows.push_back(i);
+    }
+    std::cout << "On rows";
+    for (int row : rows) {
+      std::cout << " " << row + 1;
+    }
+    std::cout << ":\n";
+    vector<vector<int>> old_rows = A.getRows();
+    vector<vector<int>> new_rows;
+    for (int row : rows) {
+      new_rows.push_back(old_rows[row]);
+    }
+    vector<vector<int>> cols_of_k = columns_of_K(k);
+    vector<vector<int>> new_cols = rowColSwap(new_rows);
+    vector<vector<int>> mat_cols;
+    remove_duplicates(new_cols);
+    for (vector<int> col : cols_of_k) {
+      if (list_contains(col, new_cols))
+        continue;
+      mat_cols.push_back(col);
+    }
+    Matrix mat(1, mat_cols);
+    std::cout << mat << std::endl;
+  }
+}
+
+void remove_duplicates(vector<vector<int>> &columns)
+{
+  vector<vector<int>> temp;
+  for (vector<int> column : columns) {
+    if (list_contains(column, temp))
+      continue;
+    temp.push_back(column);
+  }
+  columns = temp;
 }
