@@ -96,5 +96,8 @@ vector<Matrix> remove_row_perms(vector<Matrix>& list);
 // part 9
 void what_is_missing(unsigned int k, Matrix &A);
 void remove_duplicates(vector<vector<int>> &columns);
+// part 10
+unsigned int forbDown(unsigned int m, const Matrix &F, unsigned int start);
+vector<Matrix> extDown(unsigned int m, const Matrix &F, unsigned int start);
 
 #endif

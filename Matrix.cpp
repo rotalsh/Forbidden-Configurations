@@ -769,3 +769,58 @@ void remove_duplicates(vector<vector<int>> &columns)
   }
   columns = temp;
 }
+
+unsigned int forbDown(unsigned int m, const Matrix &F, unsigned int start)
+{
+  while (start > 0) {
+    vector<vector<int>> all_cols = columns_of_K(m);
+    int total_possible = 1 << m;
+    vector<vector<int>> set_of_possible_columns = columns_of_col_sum(total_possible, start);
+    for (vector<int> columns : set_of_possible_columns) {
+      vector<int> curr_cols;
+      for (unsigned int i = 0; i < columns.size(); i++) {
+        if (columns[i]) 
+          curr_cols.push_back(i);
+      }
+      vector<vector<int>> mat_cols;
+      for (int col : curr_cols) {
+        mat_cols.push_back(all_cols[col]);
+      }
+      Matrix testMat(1, mat_cols);
+      if (testMat.avoids(F)) {
+        return start;
+      }
+    }
+    start--;
+  }
+  return 0;
+}
+
+vector<Matrix> extDown(unsigned int m, const Matrix &F, unsigned int start)
+{
+  while (start > 0) {
+    vector<vector<int>> all_cols = columns_of_K(m);
+    int total_possible = 1 << m;
+    vector<vector<int>> set_of_possible_columns = columns_of_col_sum(total_possible, start);
+    vector<Matrix> ret;
+    for (vector<int> columns : set_of_possible_columns) {
+      vector<int> curr_cols;
+      for (unsigned int i = 0; i < columns.size(); i++) {
+        if (columns[i]) 
+          curr_cols.push_back(i);
+      }
+      vector<vector<int>> mat_cols;
+      for (int col : curr_cols) {
+        mat_cols.push_back(all_cols[col]);
+      }
+      Matrix testMat(1, mat_cols);
+      if (testMat.avoids(F)) {
+        ret.push_back(testMat);
+      }
+    }
+    if (!ret.empty())
+      return ret;
+    start--;
+  }
+  return vector<Matrix>();
+}
