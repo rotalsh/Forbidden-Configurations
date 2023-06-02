@@ -6,15 +6,25 @@
 
 using std::vector;
 
+/**
+ * Returns the number of rows in the matrix
+ */
 unsigned int Matrix::numRows() const {
   return rows;
 }
 
+/**
+ * Returns the number of columns in the matrix
+ */
 unsigned int Matrix::numCols() const {
   return cols;
 }
 
 /**
+ * Constructor for Matrix
+ * @param r the number of rows of the matrix
+ * @param c the number of columns in the matrix
+ * @param nums the elements of the matrix - the order in nums is such that each row is filled first
  * REQUIRE: r*c == nums.size()
  */
 Matrix::Matrix(int r, int c, vector<int> nums) {
@@ -28,6 +38,11 @@ Matrix::Matrix(int r, int c, vector<int> nums) {
   elems = nums;
 }
 
+/**
+ * Constructor for Matrix
+ * @param ver 0 means nums is vector of rows, 1 means nums is vector of columns
+ * @param nums elements of the matrix, represented either as a vector of rows or vector of columns
+ */
 Matrix::Matrix(int ver, vector<vector<int>> nums) {
   if (nums.empty()) return;
 
@@ -50,12 +65,20 @@ Matrix::Matrix(int ver, vector<vector<int>> nums) {
   }
 }
 
+/**
+ * Return the result of matrix multiplication
+ * @param b the matrix that comes second in the multiplication
+ */
 Matrix Matrix::dotWith(Matrix b) {
   return dot(*this, b);
 }
 
+/**
+ * Print contents of the matrix
+ */
 void Matrix::printMatrix() {
   std::cout << "_" << std::endl;
+  if (elems.empty()) return;
   for (unsigned int i = 0; i < rows; i++) {
     std::cout << "| ";
     for (unsigned int j = 0; j < cols; j++) {
@@ -65,6 +88,9 @@ void Matrix::printMatrix() {
   }
 }
 
+/**
+ * Return the elements in the matrix as a vector of rows
+ */
 vector<vector<int>> Matrix::getRows() const {
   vector<vector<int>> ret;
   for (unsigned int i = 0; i < rows; i++) {
@@ -77,6 +103,9 @@ vector<vector<int>> Matrix::getRows() const {
   return ret;
 }
 
+/**
+ * Return the elements in the matrix as a vector of columns
+ */
 vector<vector<int>> Matrix::getCols() const {
   vector<vector<int>> ret;
   for (unsigned int i = 0; i < cols; i++) {
@@ -89,15 +118,24 @@ vector<vector<int>> Matrix::getCols() const {
   return ret;
 }
 
+/**
+ * Return the elements of the matrix as a single vector of elements
+ */
 vector<int> Matrix::getElems() const
 {
   return elems;
 }
 
+/**
+ * Return the transpose of the matrix
+ */
 Matrix Matrix::transposeOf() {
   return Matrix(0, getCols());
 }
 
+/**
+ * Transpose the matrix (rotate along the main diagonal)
+ */
 void Matrix::transpose() {
   Matrix A(0, getCols());
   rows = A.rows;
@@ -105,6 +143,9 @@ void Matrix::transpose() {
   elems = A.elems;
 }
 
+/**
+ * Return the 0-1 complement of the matrix
+ */
 Matrix Matrix::complementOf() {
   vector<int> comp;
   for (unsigned int i = 0; i < elems.size(); i++) {
@@ -113,11 +154,18 @@ Matrix Matrix::complementOf() {
   return Matrix(rows, cols, comp);
 }
 
+/**
+ * 0-1 complement the matrix (set 0's to 1's and vice versa)
+ */
 void Matrix::complement() {
   Matrix other = complementOf();
   elems = other.elems;
 }
 
+/**
+ * Multiply each element in the matrix by an integer a
+ * @param a the integer to multiply
+ */
 void Matrix::multiply(int a) {
   for (unsigned int i = 0; i < elems.size(); i++) {
     elems[i] *= a;
@@ -125,6 +173,8 @@ void Matrix::multiply(int a) {
 }
 
 /**
+ * Perform elementwise multiplication of this matrix and b
+ * @param b the matrix to elementwise multiply to
  * REQUIRE: this->rows == b.rows && this->cols == b.cols
  */
 void Matrix::multiply(const Matrix &b){
@@ -138,6 +188,8 @@ void Matrix::multiply(const Matrix &b){
 }
 
 /**
+ * Perform elementwise addition of this matrix and b
+ * @param b the matrix to elementwise add to
  * REQUIRE: this->rows == b.rows && this->cols == b.cols
  */
 void Matrix::add(const Matrix& b) {
@@ -151,6 +203,8 @@ void Matrix::add(const Matrix& b) {
 }
 
 /**
+ * Return the result of performing elementwise addition on this matrix and b
+ * @param b the matrix to elementwise add to
  * REQUIRE: this->rows == b.rows && this->cols == b.cols
  */
 Matrix Matrix::operator+(const Matrix &b)
@@ -167,6 +221,8 @@ Matrix Matrix::operator+(const Matrix &b)
 }
 
 /**
+ * Return the result of performing elementwise multiplication on this matrix and b
+ * the matrix to elementwise multiply to
  * REQUIRE: this->rows == b.rows && this->cols == b.cols
  */
 Matrix Matrix::operator*(const Matrix &b)
@@ -182,6 +238,10 @@ Matrix Matrix::operator*(const Matrix &b)
   return Matrix(rows, cols, nums);
 }
 
+/**
+ * Return the result of multiplying each element in the matrix by an integer a
+ * @param a the integer to multiply
+ */
 Matrix Matrix::operator*(int a)
 {
   vector<int> nums;
@@ -191,6 +251,10 @@ Matrix Matrix::operator*(int a)
   return Matrix(rows, cols, nums);
 }
 
+/**
+ * Return true if this matrix has a submatrix that is equal to b
+ * @param b the matrix that may or may not be a submatrix
+ */
 bool Matrix::contains(const Matrix &b) const
 {
   if (rows < b.rows || cols < b.cols) return false;
@@ -213,6 +277,15 @@ bool Matrix::contains(const Matrix &b) const
 }
 
 /**
+ * Return true if b has a submatrix that is equal to this matrix
+ * @param b the matrix that may or may not contain this matrix as a submatrix
+ */
+bool Matrix::containedIn(const Matrix &b) const
+{
+  return b.contains(*this);
+}
+
+/**
  * Helper function for contains - special case where both matrices have the same column length, only
  *  need to check row equality in this case
  * @param a larger matrix that b could be in
@@ -231,6 +304,10 @@ bool Matrix::rowsContain(const Matrix &a, const Matrix &b) const {
   return false;
 }
 
+/**
+ * Return true if this matrix does not contain b as a configuration
+ * @param b the matrix that may or may not be a configuration
+ */
 bool Matrix::avoids(const Matrix &b) const
 {
   if (rows < b.rows || cols < b.cols) return true;
@@ -239,83 +316,10 @@ bool Matrix::avoids(const Matrix &b) const
 }
 
 /**
- * @todo don't forget to do this
- * REQUIRES: b has the same number of columns as this
- */
-bool Matrix::row_permutation_of(const Matrix &b) const
-{
-  return row_permutation_of(Node(makeVec(b.rows), vector<int>()), b);
-}
-
-/**
- * Private helper function for row_permutation_of
- */
-bool Matrix::row_permutation_of(const Node& row_node, const Matrix &b) const {
-  if (row_node.rem.empty()) {
-    vector<vector<int>> mat; 
-    vector<vector<int>> temp = b.getRows();
-    for (unsigned int j = 0; j < row_node.sel.size(); j++) {
-      mat.push_back(temp[row_node.sel[j]]);
-    }
-    return *this == (Matrix(0, mat));
-  }
-  for (unsigned int i = 0; i < row_node.rem.size(); i++) {
-    vector<int> curr_sel = row_node.sel;
-    vector<int> curr_rem = row_node.rem;
-    curr_sel.push_back(curr_rem[i]);
-    curr_rem.erase(curr_rem.begin() + i);    
-    bool attempt = row_permutation_of(Node(curr_rem, curr_sel), b);
-    if (attempt) return true;
-  }
-  return false;
-}
-
-/**
- * Function for shifting down (subtract 1 from given row for each column unless it makes a copy)
- * 0 is preserved as 0
- * REQUIRES: matrix is simple, row < this->rows
- */
-void Matrix::shiftDown(unsigned int row)
-{
-  if (row >= rows || !this->isSimple()) {
-    std::cout << "Shifting undefined for this case" << std::endl;
-  }
-  vector<vector<int>> toShift = getCols();
-  for (unsigned int i = 0; i < toShift.size(); i++) {
-    vector<int> temp = toShift[i];
-    temp[row] = 0;
-    if (!list_contains(temp, toShift)) {
-      toShift[i] = temp;
-    }
-  }
-  Matrix other(1, toShift);
-  elems = other.elems;
-}
-
-/**
- * Function for shifting up (add 1 from given row for each column unless it makes a copy)
- * 1 is preserved as 1
- * REQUIRES: matrix is simple, row < this->rows
- */
-void Matrix::shiftUp(unsigned int row)
-{
-  if (row >= rows || !this->isSimple()) {
-    std::cout << "Shifting undefined for this case" << std::endl;
-  }
-  vector<vector<int>> toShift = getCols();
-  for (unsigned int i = 0; i < toShift.size(); i++) {
-    vector<int> temp = toShift[i];
-    temp[row] = 1;
-    if (!list_contains(temp, toShift)) {
-      toShift[i] = temp;
-    }
-  }
-  Matrix other(1, toShift);
-  elems = other.elems;
-}
-
-/**
  * Private helper function for avoid, checking for different columns first
+ * Check different column permutations of b to see if this matrix has that column permutation as a submatrix
+ * @param col_node the permutation of columns to be chosen
+ * @param b the matrix that many or may not be a configuration
  */
 bool Matrix::avoids(const Node& col_node, const Matrix &b) const
 {
@@ -335,6 +339,11 @@ bool Matrix::avoids(const Node& col_node, const Matrix &b) const
 
 /**
  * Private helper function for avoid, given a fixed column check different rows
+ * Check different row permutations of the given column permutations in pot_cols
+ *  to see if this matrix has that row and column permutation as a submatrix
+ * @param pot_cols the permutation of columns being checked currently
+ * @param row_node the permutation of rows to be chosen
+ * @param the matrix that may or may not be a configuration
  */
 bool Matrix::avoids(const vector<int> &pot_cols, const Node &row_node, const Matrix &b) const
 {
@@ -388,11 +397,92 @@ vector<vector<int>> Matrix::potentialCols(int row, int k, int pos, const Matrix&
   return ret;
 }
 
-bool Matrix::containedIn(const Matrix &b) const
+/**
+ * Return true if b is a row permutation of this matrix
+ * @param b the matrix that may or may not be a row permutation
+ */
+bool Matrix::row_permutation_of(const Matrix &b) const
 {
-  return b.contains(*this);
+  if (cols != b.cols || rows != b.rows) 
+    return false;
+  return row_permutation_of(Node(makeVec(b.rows), vector<int>()), b);
 }
 
+/**
+ * Private helper function for row_permutation_of
+ * Return true if b is a row permutation of this matrix
+ * @param row_node a node keeping track of which rows have been added so far
+ * @param b the matrix that may or may not be a row permutation
+ */
+bool Matrix::row_permutation_of(const Node& row_node, const Matrix &b) const {
+  if (row_node.rem.empty()) {
+    vector<vector<int>> mat; 
+    vector<vector<int>> temp = b.getRows();
+    for (unsigned int j = 0; j < row_node.sel.size(); j++) {
+      mat.push_back(temp[row_node.sel[j]]);
+    }
+    return *this == (Matrix(0, mat));
+  }
+  for (unsigned int i = 0; i < row_node.rem.size(); i++) {
+    vector<int> curr_sel = row_node.sel;
+    vector<int> curr_rem = row_node.rem;
+    curr_sel.push_back(curr_rem[i]);
+    curr_rem.erase(curr_rem.begin() + i);    
+    bool attempt = row_permutation_of(Node(curr_rem, curr_sel), b);
+    if (attempt) return true;
+  }
+  return false;
+}
+
+/**
+ * Function for shifting down (subtract 1 from given row for each column unless it makes a copy)
+ * 0 is preserved as 0
+ * @param row the row to shift (0-indexed)
+ * REQUIRES: matrix is simple, row < this->rows
+ */
+void Matrix::shiftDown(unsigned int row)
+{
+  if (row >= rows || !this->isSimple()) {
+    std::cout << "Shifting undefined for this case" << std::endl;
+  }
+  vector<vector<int>> toShift = getCols();
+  for (unsigned int i = 0; i < toShift.size(); i++) {
+    vector<int> temp = toShift[i];
+    temp[row] = 0;
+    if (!list_contains(temp, toShift)) {
+      toShift[i] = temp;
+    }
+  }
+  Matrix other(1, toShift);
+  elems = other.elems;
+}
+
+/**
+ * Function for shifting up (add 1 from given row for each column unless it makes a copy)
+ * 1 is preserved as 1
+ * @param row the row to shift (0-indexed)
+ * REQUIRES: matrix is simple, row < this->rows
+ */
+void Matrix::shiftUp(unsigned int row)
+{
+  if (row >= rows || !this->isSimple()) {
+    std::cout << "Shifting undefined for this case" << std::endl;
+  }
+  vector<vector<int>> toShift = getCols();
+  for (unsigned int i = 0; i < toShift.size(); i++) {
+    vector<int> temp = toShift[i];
+    temp[row] = 1;
+    if (!list_contains(temp, toShift)) {
+      toShift[i] = temp;
+    }
+  }
+  Matrix other(1, toShift);
+  elems = other.elems;
+}
+
+/**
+ * Return true if the matrix has no repeated columns
+ */
 bool Matrix::isSimple()
 {
   vector<vector<int>> c = getCols();
@@ -404,11 +494,19 @@ bool Matrix::isSimple()
   return true;
 }
 
+/**
+ * Add the matrix b to this matrix then return the result of the assignment
+ * @param b the matrix to add
+ */
 Matrix Matrix::operator+=(const Matrix &b)
 {
   return *this = *this + b;
 }
 
+/**
+ * Return true if this matrix and b have the same number of rows, columns, and the same elements
+ * @param b the matrix to check equality
+ */
 bool Matrix::operator==(const Matrix &b) const
 {
   if (this == &b) return true;
@@ -416,6 +514,9 @@ bool Matrix::operator==(const Matrix &b) const
 }
 
 /**
+ * Return the result of doing matrix multiplication on two matrices
+ * @param a the first matrix in the multiplication
+ * @param b the second matrix in the multiplication
  * REQUIRE: a.numCols() == b.numRows()
  */
 Matrix dot(Matrix a, Matrix b) {
@@ -437,6 +538,11 @@ Matrix dot(Matrix a, Matrix b) {
   return A;
 }
 
+/**
+ * Return the result of multiplying each element in b by an integer a
+ * @param a the integer to multiply
+ * @param b the matrix to multiply
+ */
 Matrix operator*(int a, const Matrix &b)
 {
   vector<int> nums;
@@ -446,6 +552,11 @@ Matrix operator*(int a, const Matrix &b)
   return Matrix(b.numRows(), b.numCols(), nums);
 }
 
+/**
+ * Definition of the ostream operator<< for a vector of ints
+ * @param output the output to add to
+ * @param a the vector of ints
+ */
 std::ostream &operator<<(std::ostream &output, const vector<int> &a)
 {
   for (unsigned int i = 0; i < a.size(); i++) {
@@ -454,6 +565,11 @@ std::ostream &operator<<(std::ostream &output, const vector<int> &a)
   return output;
 }
 
+/**
+ * Definition of the ostream operator<< for a vector of vector of ints
+ * @param output the output to add to
+ * @param a the vector of vector of ints
+ */
 std::ostream& operator<<(std::ostream& output, const vector<vector<int>>& a) {
   for (unsigned int i = 0; i < a.size(); i++) {
     output << a[i] << (i == a.size()-1 ? "" : "\n");
@@ -461,6 +577,11 @@ std::ostream& operator<<(std::ostream& output, const vector<vector<int>>& a) {
   return output;
 }
 
+/**
+ * Definition of the ostream operator<< for a matrix
+ * @param output the output to add to
+ * @param a the matrix
+ */
 std::ostream &operator<<(std::ostream &output, const Matrix &a)
 {
   output << "_" << std::endl;
@@ -479,6 +600,11 @@ std::ostream &operator<<(std::ostream &output, const Matrix &a)
   return output;
 }
 
+/**
+ * Definition of the ostream operator<< for a vector of matrices
+ * @param output the output to add to
+ * @param a the vector of matrices
+ */
 std::ostream& operator<<(std::ostream& output, const vector<Matrix>& a) {
   for (unsigned int i = 0; i < a.size(); i++) {
     output << a[i] << (i == a.size()-1 ? "" : "\n");
@@ -486,6 +612,10 @@ std::ostream& operator<<(std::ostream& output, const vector<Matrix>& a) {
   return output;
 }
 
+/**
+ * Make a vector of size i containing the elements [0, ..., i - 1] in that order
+ * @param i the number of elements the output vector should have
+ */
 vector<int> makeVec(unsigned int i)
 {
   vector<int> ret;
@@ -496,6 +626,9 @@ vector<int> makeVec(unsigned int i)
 }
 
 /**
+ * Assume a represents a vector of rows of a matrix.
+ *  Return the vector of columns of this same matrix (or vice versa - assume vector of columns, return rows).
+ * @param a the vector of vector of ints
  * REQUIRE: a[i].size() is the same for all i in [0, a.size()-1]
  */
 vector<vector<int>> rowColSwap(vector<vector<int>> &a)
@@ -512,6 +645,9 @@ vector<vector<int>> rowColSwap(vector<vector<int>> &a)
 }
 
 /**
+ * Return a vector of vector of ints, each whose size is equal to height and have the same number of 1's as sum.
+ * @param height the size of each vector
+ * @param sum the number of 1's each vector should have
  * REQUIRES: sum <= height
  */
 vector<vector<int>> columns_of_col_sum(unsigned int height, unsigned int sum)
@@ -545,6 +681,19 @@ vector<vector<int>> columns_of_col_sum(unsigned int height, unsigned int sum)
   return add_ones;
 }
 
+/**
+ * Return K_height - a height * 2^height matrix of all possible columns of size height
+ * @param height the height the generated matrix should have
+ */
+Matrix generate_K(unsigned int height)
+{
+  return Matrix(1, columns_of_K(height));
+}
+
+/**
+ * Return the vector of ints that form the columns of the matrix K_height
+ * @param height the size of each vector
+ */
 vector<vector<int>> columns_of_K(unsigned int height)
 {
   vector<vector<int>> all_columns;
@@ -554,16 +703,10 @@ vector<vector<int>> columns_of_K(unsigned int height)
   }
   return all_columns;
 }
-/**
- * Make K_height - a height x 2^height matrix of all possible columns of size height
- */
-Matrix generate_K(unsigned int height)
-{
-  return Matrix(1, columns_of_K(height));
-}
 
 /**
- * Make T_height - an upper triangular matrix of size height
+ * Return T_height - an upper triangular matrix of size height
+ * @param height the number of rows in the returned matrix
  * REQUIRES: height > 0
  */
 Matrix generate_T(unsigned int height)
@@ -583,6 +726,9 @@ Matrix generate_T(unsigned int height)
 }
 
 /**
+ * Return the result of performing the dot product between two vectors (sum of elementwise multiplcation)
+ * @param a the first vector
+ * @param b the second vector
  * REQUIRE: a.size() == b.size()
  */
 int dot(vector<int>& a, vector<int>& b) {
@@ -597,6 +743,11 @@ int dot(vector<int>& a, vector<int>& b) {
   return ret;
 }
 
+/**
+ * Return true if list contains elem
+ * @param elem the element to check for
+ * @param list the list to check within
+ */
 template<class E>
 bool list_contains(E &elem, vector<E> &list) {
   for (E e : list) {
@@ -605,6 +756,14 @@ bool list_contains(E &elem, vector<E> &list) {
   return false;
 }
 
+/**
+ * Return the matrix cross product between two matrices - 
+ *  Let m and n be the number of columns in a and b, respectively. For each column in a, make n new columns 
+ *  which are the elements of the column in a followed by the elements of the n columns in b.
+ *  The result is a matrix with m*n columns.
+ * @param a the first matrix
+ * @param b the second matrix
+ */
 Matrix matrixCross(const Matrix& a, const Matrix& b) {
   vector<vector<int>> a_cols = a.getCols();
   vector<vector<int>> b_cols = b.getCols();
@@ -621,7 +780,9 @@ Matrix matrixCross(const Matrix& a, const Matrix& b) {
 }
 
 /**
- * Given two matrices make a new matrix whose columns are the columns of a followed by the columns of b
+ * Given two matrices return a new matrix whose columns are the columns of a followed by the columns of b
+ * @param a the first matrix
+ * @param b the second matrix
  * REQUIRED: a and b have the same number of rows
  */
 Matrix matrixCombine(const Matrix& a, const Matrix& b) {
@@ -633,6 +794,14 @@ Matrix matrixCombine(const Matrix& a, const Matrix& b) {
 
 /**
  * Private helper for Avoid - generative recursion
+ * Pop the last element in sel. Make a copy of rem. Add that last element to one of the copies of rem (call it rem_added).
+ *  If rem_added avoids F, perform recursion on rem_added and sel, then add the matrix made from rem_added to the results.
+ *  If not, do nothing with rem_added.
+ *  Next, perform recursion on rem_skipped (the other copy of rem without the extra element), add these matrices
+ *  to the vector of matrices from the previous step, then return the vector.
+ * @param rem a vector of columns to choose from
+ * @param sel a vector of columns already chosen
+ * @param F the matrix to avoid
  */
 vector<Matrix> Avoid(vector<vector<int>> rem, vector<vector<int>> sel, const Matrix &F) {
   if (rem.empty()) 
@@ -652,7 +821,10 @@ vector<Matrix> Avoid(vector<vector<int>> rem, vector<vector<int>> sel, const Mat
 }
 
 /**
- * @todo this function
+ * Return a vector of m-rows, simple matrices such that for each vector A in the matrix, 
+ *  A.avoids(F) is true.
+ * @param m the number of rows each matrix should have
+ * @param F the configuration to avoid
  */
 vector<Matrix> Avoid(unsigned int m, const Matrix &F)
 {
@@ -661,6 +833,10 @@ vector<Matrix> Avoid(unsigned int m, const Matrix &F)
   return Avoid(cols, vector<vector<int>>(), F);
 }
 
+/**
+ * Given a vector of matrices, return the max of the number of columns from the matrices in the vector
+ * @param list the vector of matrices
+ */
 unsigned int max_col_count(vector<Matrix> &list)
 {
   unsigned int max = 0;
@@ -670,12 +846,22 @@ unsigned int max_col_count(vector<Matrix> &list)
   return max;
 }
 
+/**
+ * Return the maximum number of columns a matrix can have if it has m rows and avoids F.
+ * @param m the number of rows each matrix should have
+ * @param F the configuration to avoid
+ */
 unsigned int forb(unsigned int m, const Matrix &F)
 {
   vector<Matrix> list = Avoid(m, F);
   return max_col_count(list);
 }
 
+/**
+ * Return a vector of matrices that are in Avoid(m, F) which have the same number of columns as forb(m, F)
+ * @param m the number of rows each matrix should have
+ * @param F the configuration to avoid
+ */
 vector<Matrix> ext(unsigned int m, const Matrix &F)
 {
   vector<Matrix> list = Avoid(m, F);
@@ -683,6 +869,12 @@ vector<Matrix> ext(unsigned int m, const Matrix &F)
   return ext_match_helper(bound, list);
 }
 
+/**
+ * Return a vector of matrices that are in Avoid(m, F) which have the same number of columns as bound
+ * @param m the number of rows each matrix should have
+ * @param F the configuration to avoid
+ * @param bound the number of columns each matrix should have
+ */
 vector<Matrix> match(unsigned int m, const Matrix &F, unsigned int bound)
 {
   vector<Matrix> list = Avoid(m, F);
@@ -691,6 +883,8 @@ vector<Matrix> match(unsigned int m, const Matrix &F, unsigned int bound)
 
 /**
  * Return a subset of the list of matrices that have the same number of columns as given bound
+ * @param bound the number of columns each matrix should have
+ * @param list the vector of matrices
  */
 vector<Matrix> ext_match_helper(unsigned int bound, vector<Matrix> &list)
 {
@@ -703,6 +897,11 @@ vector<Matrix> ext_match_helper(unsigned int bound, vector<Matrix> &list)
   return ret;
 }
 
+/**
+ * Given a vector of matrices, return a new vector of matrices such that none of the elements in the
+ *  new vector are row permutations of one another
+ * @param list the vector of matrices
+ */
 vector<Matrix> remove_row_perms(vector<Matrix> &list)
 {
   vector<Matrix> ret;
@@ -722,7 +921,10 @@ vector<Matrix> remove_row_perms(vector<Matrix> &list)
 }
 
 /**
- * On the combinations of k rows, tells you what's missing
+ * On each possible combination of k rows in A, tells you which column of K_k is missing
+ *  1-indexed
+ * @param k the number of rows to choose
+ * @param A the matrix
  * REQUIRES: k <= A.numRows()
  */
 void what_is_missing(unsigned int k, Matrix &A)
@@ -759,6 +961,10 @@ void what_is_missing(unsigned int k, Matrix &A)
   }
 }
 
+/**
+ * Remove duplicates from a vector of vector of ints.
+ * @param columns the vector of vector of ints
+ */
 void remove_duplicates(vector<vector<int>> &columns)
 {
   vector<vector<int>> temp;
@@ -770,6 +976,12 @@ void remove_duplicates(vector<vector<int>> &columns)
   columns = temp;
 }
 
+/**
+ * Perform forb by looking for matrices with start number of columns and going down from there
+ * @param m the number of rows
+ * @param F the configuration to avoid
+ * @param start the number of columns to start from
+ */
 unsigned int forbDown(unsigned int m, const Matrix &F, unsigned int start)
 {
   while (start > 0) {
@@ -796,6 +1008,12 @@ unsigned int forbDown(unsigned int m, const Matrix &F, unsigned int start)
   return 0;
 }
 
+/**
+ * Perform ext by looking for matrices with start number of columns and going down from there
+ * @param m the number of rows
+ * @param F the configuration to avoid
+ * @param start the number of columns to start from
+ */
 vector<Matrix> extDown(unsigned int m, const Matrix &F, unsigned int start)
 {
   while (start > 0) {
